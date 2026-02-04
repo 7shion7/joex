@@ -1,59 +1,99 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>自習用メモ帳</title>
+  <meta charset="utf-8">
+  <title>2048</title>
+
+  <link href="style/main.css" rel="stylesheet" type="text/css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="meta/apple-touch-icon.png">
+  <link rel="apple-touch-startup-image" href="meta/apple-touch-startup-image-640x1096.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"> <!-- iPhone 5+ -->
+  <link rel="apple-touch-startup-image" href="meta/apple-touch-startup-image-640x920.png"  media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)"> <!-- iPhone, retina -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
-<body style="font-family: sans-serif; padding: 20px; line-height: 1.6;">
-    <h1>2026年度 学習カリキュラム</h1>
-    <p>本日の目標：英単語100個暗記と、数学のワーク3ページ。<span id="start-btn" style="cursor: default; color: #000;">。</span></p>
+<body>
+  <div class="container">
+    <div class="heading">
+      <h1 class="title">2048</h1>
+      <div class="scores-container">
+        <div class="score-container">0</div>
+        <div class="best-container">0</div>
+      </div>
+    </div>
+
+    <div class="above-game">
+      <p class="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
+      <a class="restart-button">New Game</a>
+    </div>
+
+    <div class="game-container">
+      <div class="game-message">
+        <p></p>
+        <div class="lower">
+	        <a class="keep-playing-button">Keep going</a>
+          <a class="retry-button">Try again</a>
+        </div>
+      </div>
+
+      <div class="grid-container">
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+      </div>
+
+      <div class="tile-container">
+
+      </div>
+    </div>
+
+    <p class="game-explanation">
+      <strong class="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
+    </p>
     <hr>
-    <p>※ここは先生に見られても大丈夫なダミーの文章です。教育的な内容を書き込んでおきましょう。</p>
+    <p>
+    <strong class="important">Note:</strong> This site is the official version of 2048. You can play it on your phone via <a href="http://git.io/2048">http://git.io/2048.</a> All other apps or sites are derivatives or fakes, and should be used with caution.
+    </p>
+    <hr>
+    <p>
+    Created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a>
+    </p>
+  </div>
 
-    <script>
-        // --- 設定エリア：ここにゲームを追加していく ---
-        const games = [
-            { name: "テトリス", url: "./game1/index.html" },
-            { name: "マインクラフト", url: "https://classic.minecraft.net/" },
-            { name: "外部サイトゲーム", url: "https://chsydev.github.io/tbgg/" }
-        ];
-        // ------------------------------------------
-
-        document.getElementById('start-btn').onclick = function() {
-            const win = window.open('about:blank', '_blank');
-            
-            // タブの偽装（Google Driveに見せかける）
-            win.document.title = "My Drive - Google Drive";
-            const icon = win.document.createElement('link');
-            icon.rel = 'icon';
-            icon.href = 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png';
-            win.document.head.appendChild(icon);
-
-            // 裏メニューの画面デザイン
-            win.document.body.style = "background:#111; color:#0f0; font-family:monospace; padding:50px; text-align:center;";
-            let menuHTML = "<h1>DEVICE_ROOT: /GAMES/</h1><p>起動するプログラムを選択してください...</p><br>";
-            
-            games.forEach((game, index) => {
-                menuHTML += `<button onclick="launch(${index})" style="padding:10px 20px; margin:10px; cursor:pointer; background:#222; color:#0f0; border:1px solid #0f0;"> ${game.name} </button>`;
-            });
-
-            win.document.body.innerHTML = menuHTML;
-
-            // ゲーム起動用の関数を新しいタブに埋め込む
-            const script = win.document.createElement('script');
-            script.innerHTML = `
-                const gamesList = ${JSON.stringify(games)};
-                function launch(i) {
-                    document.body.innerHTML = '';
-                    document.body.style.margin = '0';
-                    const ifr = document.createElement('iframe');
-                    ifr.style = "width:100vw; height:100vh; border:none; position:fixed; top:0; left:0;";
-                    ifr.src = gamesList[i].url;
-                    document.body.appendChild(ifr);
-                }
-            `;
-            win.document.body.appendChild(script);
-        };
-    </script>
+  <script src="js/bind_polyfill.js"></script>
+  <script src="js/classlist_polyfill.js"></script>
+  <script src="js/animframe_polyfill.js"></script>
+  <script src="js/keyboard_input_manager.js"></script>
+  <script src="js/html_actuator.js"></script>
+  <script src="js/grid.js"></script>
+  <script src="js/tile.js"></script>
+  <script src="js/local_storage_manager.js"></script>
+  <script src="js/game_manager.js"></script>
+  <script src="js/application.js"></script>
 </body>
 </html>

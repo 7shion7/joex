@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>自習用メモ帳</title>
+</head>
+<body style="font-family: sans-serif; padding: 20px; line-height: 1.6;">
+    <h1>2026年度 学習カリキュラム</h1>
+    <p>本日の目標：英単語100個暗記と、数学のワーク3ページ。<span id="start-btn" style="cursor: default; color: #000;">。</span></p>
+    <hr>
+    <p>※ここは先生に見られても大丈夫なダミーの文章です。教育的な内容を書き込んでおきましょう。</p>
+
+    <script>
+        // --- 設定エリア：ここにゲームを追加していく ---
+        const games = [
+            { name: "テトリス", url: "./game1/index.html" },
+            { name: "マインクラフト", url: "https://classic.minecraft.net/" },
+            { name: "外部サイトゲーム", url: "https://chsydev.github.io/tbgg/" }
+        ];
+        // ------------------------------------------
+
+        document.getElementById('start-btn').onclick = function() {
+            const win = window.open('about:blank', '_blank');
+            
+            // タブの偽装（Google Driveに見せかける）
+            win.document.title = "My Drive - Google Drive";
+            const icon = win.document.createElement('link');
+            icon.rel = 'icon';
+            icon.href = 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png';
+            win.document.head.appendChild(icon);
+
+            // 裏メニューの画面デザイン
+            win.document.body.style = "background:#111; color:#0f0; font-family:monospace; padding:50px; text-align:center;";
+            let menuHTML = "<h1>DEVICE_ROOT: /GAMES/</h1><p>起動するプログラムを選択してください...</p><br>";
+            
+            games.forEach((game, index) => {
+                menuHTML += `<button onclick="launch(${index})" style="padding:10px 20px; margin:10px; cursor:pointer; background:#222; color:#0f0; border:1px solid #0f0;"> ${game.name} </button>`;
+            });
+
+            win.document.body.innerHTML = menuHTML;
+
+            // ゲーム起動用の関数を新しいタブに埋め込む
+            const script = win.document.createElement('script');
+            script.innerHTML = `
+                const gamesList = ${JSON.stringify(games)};
+                function launch(i) {
+                    document.body.innerHTML = '';
+                    document.body.style.margin = '0';
+                    const ifr = document.createElement('iframe');
+                    ifr.style = "width:100vw; height:100vh; border:none; position:fixed; top:0; left:0;";
+                    ifr.src = gamesList[i].url;
+                    document.body.appendChild(ifr);
+                }
+            `;
+            win.document.body.appendChild(script);
+        };
+    </script>
+</body>
+</html>
